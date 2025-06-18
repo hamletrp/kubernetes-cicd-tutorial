@@ -45,7 +45,7 @@ jobs:
           
           sed -i '' "s|image: ghcr.io/${{ github.repository }}:.*|image: ghcr.io/${{ github.repository }}:${{ github.sha }}|g" deployment.yaml
           # sed -i "s|image: ghcr.io/${{ github.repository }}:.*|image: ghcr.io/${{ github.repository }}:${{ github.sha }}|g" deployment.yaml
-
+          cat ./deployment.yaml
           
           # Commit changes
           git config --global user.name "GitHub Actions"
