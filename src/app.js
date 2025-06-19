@@ -13,7 +13,7 @@ let grades = [{
 },{
     "name": "Fort Lauderdale Land Lord",
     "subject": "Hamlet R",
-    "score": 4500000
+    "score": 4700000
 },{
     "name": "Self Made Millionaire USD",
     "subject": "Hamlet R",
