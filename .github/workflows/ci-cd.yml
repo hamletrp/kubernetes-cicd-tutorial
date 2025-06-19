@@ -47,7 +47,7 @@ jobs:
           
           # Clone repository using HTTPS URL without token
           git clone https://github.com/hamletrp/k8s-tests.git gitops
-          cd gitops/app-charts-enduser/charts/gradeapp
+          cd ./gitops/app-charts-enduser/charts/gradeapp
 
           echo ./values.yaml
           yq e '.image.tag = ${{ github.sha }}' -i values.yaml
@@ -60,4 +60,4 @@ jobs:
           git commit -m "Update image to ${{ github.sha }}"
           
           # Push
-          git push -f https://${GIT_TOKEN}@github.com/hamletrp/k8s-tests.git ${{ github.ref_name }}
+          git push -f https://${GIT_TOKEN}@github.com/hamletrp/k8s-tests.git cluster-lab-13
