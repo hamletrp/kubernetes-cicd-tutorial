@@ -47,6 +47,7 @@ jobs:
           
           # Clone repository using HTTPS URL without token
           git clone https://github.com/hamletrp/k8s-tests.git gitops
+          cd ./gitops
           git checkout $gitops_branch_name
           cd ./gitops/app-charts-enduser/charts/gradeapp
 
