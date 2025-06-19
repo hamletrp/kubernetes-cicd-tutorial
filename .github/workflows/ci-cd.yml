@@ -34,24 +34,30 @@ jobs:
           # Configure git credential store
           git config --global credential.helper store
           echo "https://${GIT_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials
-          cat ~/.git-credentials
+          
+          echo "credentiaaaals"
+          echo ~/.git-credentials
+          echo "github.ref: ${{ github.ref }}"
+          echo "Branch name: ${{ github.ref_name }}"
+          echo "Head ref (PRs only): ${{ github.head_ref }}"
+          echo "Base ref (PRs only): ${{ github.base_ref }}"
           
           # Remove any existing gitops directory
           rm -rf gitops
           
           # Clone repository using HTTPS URL without token
-          git clone https://github.com/hamletrp/grade-api-gitops.git gitops
-          cd gitops
-          
-          sed -i '' "s|image: ghcr.io/${{ github.repository }}:.*|image: ghcr.io/${{ github.repository }}:${{ github.sha }}|g" deployment.yaml
-          # sed -i "s|image: ghcr.io/${{ github.repository }}:.*|image: ghcr.io/${{ github.repository }}:${{ github.sha }}|g" deployment.yaml
-          cat ./deployment.yaml
+          git clone https://github.com/hamletrp/k8s-tests.git gitops
+          cd gitops/app-charts-enduser/charts/gradeapp
+
+          echo ./values.yaml
+          yq e '.image.tag = ${{ github.sha }}' -i values.yaml
+          echo ./values.yaml
           
           # Commit changes
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add deployment.yaml
+          git add values.yaml
           git commit -m "Update image to ${{ github.sha }}"
           
           # Push
-          git push -f https://${GIT_TOKEN}@github.com/hamletrp/grade-api-gitops.git main
+          git push -f https://${GIT_TOKEN}@github.com/hamletrp/k8s-tests.git ${{ github.ref_name }}
