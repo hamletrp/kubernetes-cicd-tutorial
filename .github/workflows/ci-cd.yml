@@ -51,8 +51,7 @@ jobs:
           git checkout $gitops_branch_name
           cd ./app-charts-enduser/charts/gradeapp
 
-          cat ./values.yaml
-          yq e '.image.tag = ${{ github.sha }}' -i values.yaml
+          yq e '.image.tag = "${{ github.sha }}"' -i values.yaml
           cat ./values.yaml
           
           # Commit changes
