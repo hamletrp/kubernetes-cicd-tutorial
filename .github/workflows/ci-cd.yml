@@ -4,6 +4,10 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+env:
+  gitops_branch_name: cluster-lab-13
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -36,22 +40,19 @@ jobs:
           echo "https://${GIT_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials
           
           echo "credentiaaaals"
-          echo ~/.git-credentials
-          echo "github.ref: ${{ github.ref }}"
-          echo "Branch name: ${{ github.ref_name }}"
-          echo "Head ref (PRs only): ${{ github.head_ref }}"
-          echo "Base ref (PRs only): ${{ github.base_ref }}"
+          cat ~/.git-credentials
           
           # Remove any existing gitops directory
           rm -rf gitops
           
           # Clone repository using HTTPS URL without token
           git clone https://github.com/hamletrp/k8s-tests.git gitops
+          git checkout $gitops_branch_name
           cd ./gitops/app-charts-enduser/charts/gradeapp
 
-          echo ./values.yaml
+          cat ./values.yaml
           yq e '.image.tag = ${{ github.sha }}' -i values.yaml
-          echo ./values.yaml
+          cat ./values.yaml
           
           # Commit changes
           git config --global user.name "GitHub Actions"
@@ -60,4 +61,4 @@ jobs:
           git commit -m "Update image to ${{ github.sha }}"
           
           # Push
-          git push -f https://${GIT_TOKEN}@github.com/hamletrp/k8s-tests.git cluster-lab-13
+          git push -f https://${GIT_TOKEN}@github.com/hamletrp/k8s-tests.git $gitops_branch_name
