@@ -58,7 +58,7 @@ jobs:
           git checkout $GITOPS_BRANCH_NAME
           cd ./app-charts-enduser/charts/gradeapp
 
-          yq e '.image.tag = "${{ github.sha }}"' -i values.yaml
+          yq e '.image.tag = "${{ steps.vars.outputs.short_sha }}"' -i values.yaml
           
           # Commit changes
           git config --global user.name "GitHub Actions"
