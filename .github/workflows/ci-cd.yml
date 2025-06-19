@@ -39,9 +39,6 @@ jobs:
           git config --global credential.helper store
           echo "https://${GIT_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials
           
-          echo "credentiaaaals"
-          cat ~/.git-credentials
-          
           # Remove any existing gitops directory
           rm -rf gitops
           
@@ -52,7 +49,6 @@ jobs:
           cd ./app-charts-enduser/charts/gradeapp
 
           yq e '.image.tag = "${{ github.sha }}"' -i values.yaml
-          cat ./values.yaml
           
           # Commit changes
           git config --global user.name "GitHub Actions"
