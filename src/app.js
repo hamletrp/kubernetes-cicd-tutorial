@@ -10,6 +10,10 @@ let grades = [{
     "name": "Rock solid hard built trader",
     "subject": "Hamlet R",
     "score": 9000000
+},{
+    "name": "Fort Lauderdale Land Lord",
+    "subject": "Hamlet R",
+    "score": 4500000
 }];
 
 app.get('/grades', (req, res) => {
