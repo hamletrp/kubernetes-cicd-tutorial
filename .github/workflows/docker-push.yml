@@ -6,9 +6,9 @@ on:
     branches: [ main ]
 
 env:
-  GITOPS_BRANCH_NAME: cluster-lab-13
-  IMAGE_NAME: hamuretto/gradeapp
-  DOCKERHUB_USER: hamletrp@gmail.com
+  GITOPS_BRANCH_NAME: "cluster-lab-13"
+  IMAGE_NAME: "hamuretto/gradeapp"
+  DOCKERHUB_USER: "hamuretto"
 
 jobs:
   build-and-push:
@@ -30,6 +30,7 @@ jobs:
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
+        # uses: docker/login-action@v2
         with:
           registry: docker.io # default can me ommited
           username: $DOCKERHUB_USER
