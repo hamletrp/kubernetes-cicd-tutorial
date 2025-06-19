@@ -49,7 +49,7 @@ jobs:
           git clone https://github.com/hamletrp/k8s-tests.git gitops
           cd ./gitops
           git checkout $gitops_branch_name
-          cd ./gitops/app-charts-enduser/charts/gradeapp
+          cd ./app-charts-enduser/charts/gradeapp
 
           cat ./values.yaml
           yq e '.image.tag = ${{ github.sha }}' -i values.yaml
