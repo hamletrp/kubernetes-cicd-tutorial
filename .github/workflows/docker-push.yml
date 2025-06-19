@@ -1,5 +1,4 @@
-name: Build and Push to ghcr
-
+name: Build and Push to DockerHub
 on:
   push:
     branches: [ main ]
@@ -7,30 +6,42 @@ on:
     branches: [ main ]
 
 env:
-  gitops_branch_name: cluster-lab-13
+  GITOPS_BRANCH_NAME: cluster-lab-13
+  IMAGE_NAME: hamuretto/gradeapp
+  DOCKERHUB_USER: hamuretto
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CONTAINER_REG_1 }}
+        uses: actions/checkout@v4
+      
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io # default can me ommited
+          username: $DOCKERHUB_USER
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract short SHA
+        id: vars
+        run: echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.short_sha }}
+            # ghcr.io/${{ github.repository }}:latest
+            # ghcr.io/${{ github.repository }}:${{ github.sha }}
+
       - name: Update GitOps repository
         shell: bash
         env:
@@ -46,7 +57,7 @@ jobs:
           # Clone repository using HTTPS URL without token
           git clone https://github.com/hamletrp/k8s-tests.git gitops
           cd ./gitops
-          git checkout $gitops_branch_name
+          git checkout $GITOPS_BRANCH_NAME
           cd ./app-charts-enduser/charts/gradeapp
 
           yq e '.image.tag = "${{ github.sha }}"' -i values.yaml
@@ -58,4 +69,4 @@ jobs:
           git commit -m "Update image to ${{ github.sha }}"
           
           # Push
-          git push -f https://${GIT_TOKEN}@github.com/hamletrp/k8s-tests.git $gitops_branch_name
+          git push -f https://${GIT_TOKEN}@github.com/hamletrp/k8s-tests.git $GITOPS_BRANCH_NAME
