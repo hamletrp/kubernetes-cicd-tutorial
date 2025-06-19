@@ -8,7 +8,7 @@ on:
 env:
   GITOPS_BRANCH_NAME: cluster-lab-13
   IMAGE_NAME: hamuretto/gradeapp
-  DOCKERHUB_USER: hamuretto
+  DOCKERHUB_USER: hamletrp@gmail.com
 
 jobs:
   build-and-push:
