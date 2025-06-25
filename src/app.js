@@ -16,7 +16,7 @@ let grades = [{
     "score": 4700000
 },{
     "name": "Self Made Millionaire USD",
-    "subject": "Hamlet R",
+    "subject": "Hamlet R.",
     "score": 90000000
 }];
 
