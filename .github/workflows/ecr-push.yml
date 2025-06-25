@@ -9,6 +9,10 @@ env:
   GITOPS_BRANCH_NAME: "cluster-lab-13"
   IMAGE_NAME: "gradeapp"
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
