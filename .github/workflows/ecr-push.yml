@@ -1,0 +1,72 @@
+name: Build and Push to AWS ECR
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  GITOPS_BRANCH_NAME: "cluster-lab-13"
+  IMAGE_NAME: "gradeapp"
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::722249351142:role/gihub-actions-ecr-push-staging
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Extract short SHA
+        id: vars
+        run: echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Build, Tag, and Push Image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: eksk8s/tests
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      # - name: Update GitOps repository
+      #   shell: bash
+      #   env:
+      #     GIT_TOKEN: ${{ secrets.GITOPS_REPO_1 }}
+      #   run: |
+      #     # Configure git credential store
+      #     git config --global credential.helper store
+      #     echo "https://${GIT_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials
+          
+      #     # Remove any existing gitops directory
+      #     rm -rf gitops
+          
+      #     # Clone repository using HTTPS URL without token
+      #     git clone https://github.com/hamletrp/k8s-tests.git gitops
+      #     cd ./gitops
+      #     git checkout $GITOPS_BRANCH_NAME
+      #     cd ./app-charts-enduser/charts/gradeapp
+
+      #     yq e '.image.tag = "${{ steps.vars.outputs.short_sha }}"' -i values.yaml
+          
+      #     # Commit changes
+      #     git config --global user.name "GitHub Actions"
+      #     git config --global user.email "actions@github.com"
+      #     git add values.yaml
+      #     git commit -m "Update image to ${{ github.sha }}"
+          
+      #     # Push
+      #     git push -f https://${GIT_TOKEN}@github.com/hamletrp/k8s-tests.git $GITOPS_BRANCH_NAME

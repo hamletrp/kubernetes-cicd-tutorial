@@ -18,10 +18,6 @@ let grades = [{
     "name": "Self Made Millionaire USD",
     "subject": "Hamlet R",
     "score": 90000000
-},{
-    "name": "Self Made Millionaire k8s Engineer!!",
-    "subject": "Furanchisu",
-    "score": 90000000
 }];
 
 app.get('/grades', (req, res) => {
