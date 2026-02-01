@@ -7,6 +7,14 @@ app.use(bodyParser.json());
 app.use(cors());
 
 let grades = [{
+    "name": "La Jefa",
+    "subject": "Agueda Pimentel",
+    "score": 9000000
+},{
+    "name": "Rock solid hard built trader - Infrastructure Engineer",
+    "subject": "Fancis R",
+    "score": 9000000
+},{
     "name": "Rock solid hard built trader",
     "subject": "Hamlet R",
     "score": 9000000
