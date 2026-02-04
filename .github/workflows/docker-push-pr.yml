@@ -49,7 +49,7 @@ jobs:
         env:
           GIT_TOKEN: ${{ secrets.GITOPS_REPO_1 }}
         run: |
-          IMAGE_NAME_FULL="${IMAGE_REGISTRY}"/"${IMAGE_NAME}":"${steps.vars.outputs.short_sha}"
+          IMAGE_NAME_FULL="${IMAGE_REGISTRY}/${IMAGE_NAME}:${steps.vars.outputs.short_sha}"
 
           # Configure git credential store
           git config --global credential.helper store
