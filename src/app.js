@@ -7,22 +7,27 @@ app.use(bodyParser.json());
 app.use(cors());
 
 let grades = [{
+    "id": 1,
     "name": "La Jefa",
     "subject": "Agueda Pimentel",
     "score": 9000000
 },{
+    "id": 2,
     "name": "Rock solid hard built trader - Infrastructure Engineer",
     "subject": "Fancis R",
     "score": 9000000
 },{
+    "id": 3,
     "name": "Rock solid hard built trader",
     "subject": "Hamlet R",
     "score": 9000000
 },{
+    "id": 4,
     "name": "Fort Lauderdale Land Lord",
     "subject": "Hamlet R.",
     "score": 4700000
 },{
+    "id": 5,
     "name": "Self Made Millionaire USD",
     "subject": "Hamlet R.",
     "score": 90000000

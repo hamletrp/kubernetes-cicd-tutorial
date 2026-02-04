@@ -1,0 +1,75 @@
+  cd:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write        # needed for pushing branch in app repo (if you do)
+      id-token: write
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: myorg/myapp
+      GITOPS_REPO: myorg/gitops-repo
+      APP_NAME: myapp
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # used by gh CLI
+    steps:
+      - name: Checkout app repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Log in to container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push image
+        run: |
+          IMAGE_TAG=${GITHUB_SHA::7}
+          FULL_IMAGE=${REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "FULL_IMAGE=$FULL_IMAGE" >> $GITHUB_ENV
+
+          docker build -t $FULL_IMAGE .
+          docker push $FULL_IMAGE
+
+      - name: Clone GitOps repo
+        run: |
+          gh repo clone "$GITOPS_REPO" gitops-repo
+          cd gitops-repo
+          git status
+
+      - name: Update dev image tag and open PR to GitOps repo
+        run: |
+          cd gitops-repo
+
+          git config user.email "ci-bot@myorg.com"
+          git config user.name "CI Bot"
+
+          # Example: update image field in dev overlay deployment
+          # Adjust path & sed expression to match your manifests
+          sed -i "s#image: ${REGISTRY}/${IMAGE_NAME}:.*#image: ${FULL_IMAGE}#g" \
+            clusters/dev/apps/${APP_NAME}/deployment.yaml
+
+          BRANCH="bump-${APP_NAME}-dev-${IMAGE_TAG}"
+
+          git checkout -b "$BRANCH"
+          git commit -am "chore: bump ${APP_NAME} dev image to ${IMAGE_TAG}"
+          git push --set-upstream origin "$BRANCH"
+
+          # Create PR using GitHub CLI
+          gh pr create \
+            --repo "$GITOPS_REPO" \
+            --head "$BRANCH" \
+            --base main \
+            --title "chore: bump ${APP_NAME} dev image to ${IMAGE_TAG}" \
+            --body "Automated image bump for ${APP_NAME}:\n\n- Image: \`${FULL_IMAGE}\`\n- Source commit: \`${GITHUB_SHA}\`"
