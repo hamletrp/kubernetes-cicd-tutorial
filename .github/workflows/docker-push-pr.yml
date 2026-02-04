@@ -83,5 +83,11 @@ jobs:
             --base "$GITOPS_BRANCH_NAME" \
             --head "$BRANCH_TEMP" \
             --title "pr: bump ${APP_NAME} ${ENV_NAME} image to ${IMAGE_TAG}" \
-            --body "Automated image bump for ${APP_NAME}:\n\n- Image: \`${IMAGE_NAME_FULL}\`\n- Source commit: \`${GITHUB_SHA}\`"
+            --body "$(cat <<EOF
+              Automated image bump for ${APP_NAME}
+
+              - Image: \`${IMAGE_NAME_FULL}\`
+              - Source commit: \`${GITHUB_SHA}\`
+              EOF
+              )"
             
