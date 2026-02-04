@@ -61,7 +61,7 @@ jobs:
           # Clone repository using HTTPS URL without token
           git clone https://github.com/hamletrp/k8s-tests.git gitops
           cd ./gitops
-          
+
           git checkout "$GITOPS_BRANCH_NAME"
 
           git config --global user.name "GitHub Actions"
@@ -89,7 +89,5 @@ jobs:
               Automated image bump for ${APP_NAME}
 
               - Image: \`${IMAGE_NAME_FULL}\`
-              - Source commit: \`${GITHUB_SHA}\`
-              EOF
-              )"
+              - Source commit: \`${GITHUB_SHA}\` EOF)"
             
