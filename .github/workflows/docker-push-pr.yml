@@ -33,7 +33,9 @@ jobs:
 
       - name: Extract short SHA
         id: vars
-        run: echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: |
+          echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          IMAGE_NAME_FULL="${IMAGE_REGISTRY}/${IMAGE_NAME}:${short_sha}"
 
       - name: Build and Push Docker image
         uses: docker/build-push-action@v5
@@ -49,8 +51,6 @@ jobs:
         env:
           GIT_TOKEN: ${{ secrets.GITOPS_REPO_1 }}
         run: |
-          IMAGE_NAME_FULL="${IMAGE_REGISTRY}/${IMAGE_NAME}:${steps.vars.outputs.short_sha}"
-
           # Configure git credential store
           git config --global credential.helper store
           echo "https://${GIT_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials
