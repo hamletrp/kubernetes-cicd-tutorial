@@ -90,5 +90,5 @@ jobs:
 
               - Image: \`${IMAGE_NAME_FULL}\`
               - Source commit: \`${GITHUB_SHA}\`
-              EOF)"
+            EOF)"
             
