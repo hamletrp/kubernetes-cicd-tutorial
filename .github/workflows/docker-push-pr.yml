@@ -49,11 +49,12 @@ jobs:
       - name: Open pr in GitOps repository
         shell: bash
         env:
-          GIT_TOKEN: ${{ secrets.GITOPS_REPO_1 }}
+          GITOPS_TOKEN: ${{ secrets.GITOPS_REPO_1 }}
+          GH_TOKEN: ${{ secrets.GITOPS_REPO_1 }}
         run: |
           # Configure git credential store
           git config --global credential.helper store
-          echo "https://${GIT_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials
+          echo "https://${GITOPS_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials
           
           # Remove any existing gitops directory
           rm -rf gitops
