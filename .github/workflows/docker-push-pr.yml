@@ -60,6 +60,7 @@ jobs:
           
           # Clone repository using HTTPS URL without token
           git clone https://github.com/hamletrp/k8s-tests.git gitops
+          git checkout "$GITOPS_BRANCH_NAME"
           cd ./gitops
 
           git config --global user.name "GitHub Actions"
