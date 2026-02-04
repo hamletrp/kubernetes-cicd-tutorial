@@ -89,5 +89,6 @@ jobs:
               Automated image bump for ${APP_NAME}
 
               - Image: \`${IMAGE_NAME_FULL}\`
-              - Source commit: \`${GITHUB_SHA}\` EOF)"
+              - Source commit: \`${GITHUB_SHA}\`
+              EOF)"
             
