@@ -52,7 +52,7 @@ jobs:
           GITOPS_TOKEN: ${{ secrets.GITOPS_REPO_1 }}
           GH_TOKEN: ${{ secrets.GITOPS_REPO_1 }}
         run: |
-          echo "short_sha=${{ steps.vars.outputs.short_sha }}" >> $GITHUB_OUTPUT
+          short_sha="${{ steps.vars.outputs.short_sha }}"
           IMAGE_NAME_FULL="${IMAGE_REGISTRY}/${IMAGE_NAME}:${short_sha}"
 
           # Configure git credential store
