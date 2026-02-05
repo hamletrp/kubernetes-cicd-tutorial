@@ -38,6 +38,19 @@ app.get('/grades', (req, res) => {
   res.json(grades);
 });
 
+app.get('/grades/:id', (req, res) => {
+  const id = Number(req.params.id);
+
+  console.log(`Received GET request for grade id ${id}`);
+
+  const grade = grades.find(u => u.id === id);
+
+  if (!grade) {
+    return res.status(404).json({ error: 'Grade not found' });
+  }
+  res.json(grade);
+});
+
 app.post('/grades', (req, res) => {
   const { name, subject, score } = req.body;
   const id = Date.now().toString();
